@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CompetitionsController;
+use App\Http\Controllers\PlayersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +16,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::apiResource('players', PlayersController::class);
+Route::apiResource('competitions', CompetitionsController::class);
+
+Route::patch('competitions/{competition}/add/{player}', 'App\Http\Controllers\CompetitionsController@addPlayer');
+Route::patch('competitions/{competition}/increment/{player}', 'App\Http\Controllers\CompetitionsController@incrementPlayerScore');

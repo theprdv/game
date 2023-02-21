@@ -7,15 +7,17 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up()
     {
-        Schema::create('competition_players', function (Blueprint $table) {
+        Schema::create('competition_player', function (Blueprint $table) {
             $table->id();
 
-            $table->integer('competition_id')->unsigned();
-            $table->integer('player_id')->unsigned();
+            $table->unsignedBigInteger('competition_id');
+            $table->unsignedBigInteger('player_id');
             $table->integer('score')->unsigned()->default(0);
 
             $table->foreign('competition_id')->references('id')->on('competitions')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('player_id')->references('id')->on('players')->onUpdate('cascade')->onDelete('cascade');
+
+            $table->unique(['competition_id', 'player_id']);
 
             $table->timestamps();
         });
@@ -23,6 +25,6 @@ return new class extends Migration {
 
     public function down()
     {
-        Schema::dropIfExists('competition_players');
+        Schema::dropIfExists('competition_player');
     }
 };
