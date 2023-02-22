@@ -1,0 +1,572 @@
+openapi: 3.1.0
+x-stoplight:
+  id: 9p1r2sm6tm65k
+info:
+  title: game
+  version: '1.0'
+  description: 'API endpoints of the core of a cometition system needed for the game, where a generic cometition is defined by a unique name and a limited number of players that can register to it.'
+  contact:
+    name: David Predusel
+    url: 'https://binary-gateway.com'
+    email: david@binary-gateway.com
+  license:
+    name: MIT
+    url: 'https://opensource.org/license/mit/'
+servers:
+  - url: 'http://localhost'
+paths:
+  /players:
+    get:
+      summary: Get Players
+      responses:
+        '200':
+          $ref: '#/components/responses/players'
+      operationId: get-players
+      description: Get all the players of the system.
+      parameters: []
+    post:
+      summary: Create Player
+      operationId: post-players
+      responses:
+        '201':
+          description: Created
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              x-examples:
+                Example 1:
+                  name: David Predu
+              properties:
+                name:
+                  type: string
+                  description: The player name
+              required:
+                - name
+      description: Post the necessary fields for the API to create a new player.
+  '/players/{playerId}':
+    parameters:
+      - schema:
+          type: string
+        name: playerId
+        in: path
+        required: true
+        description: The ID of a player
+    get:
+      summary: Get Player by ID
+      responses:
+        '200':
+          $ref: '#/components/responses/player'
+        '404':
+          description: Not Found
+      operationId: get-players-playerId
+      description: Retrieve the information of the player with the matchin ID.
+    put:
+      summary: Update Player by ID
+      operationId: put-players-playerId
+      responses:
+        '200':
+          $ref: '#/components/responses/player-simple'
+        '404':
+          description: Not Found
+      description: Update a player
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              x-examples:
+                Example 1:
+                  name: David Preduse
+              properties:
+                name:
+                  type: string
+              required:
+                - name
+    delete:
+      summary: Delete Player by ID
+      operationId: delete-players-playerId
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Not Found
+      description: Delete a player
+  /competitions:
+    get:
+      summary: Get Competitions
+      responses:
+        '200':
+          $ref: '#/components/responses/competitions'
+      operationId: get-competitions
+      description: Get all competitions of the system.
+    post:
+      summary: Create Competition
+      operationId: post-competitions
+      responses:
+        '201':
+          description: Created
+      description: Create a new competition.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              x-examples:
+                Example 1:
+                  name: David Predusel
+                  limit: 10
+              properties:
+                name:
+                  type: string
+                  description: Competition name
+                limit:
+                  type: integer
+                  description: Max number pf players
+              required:
+                - name
+                - limit
+  '/competitions/{competitionId}':
+    parameters:
+      - schema:
+          type: string
+        name: competitionId
+        in: path
+        required: true
+        description: The ID of the competition
+    get:
+      summary: Get Competition by ID
+      operationId: get-competitions-id
+      description: Retrieve the information of the competition with the matchin ID.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                x-examples:
+                  Example 1:
+                    current_page: 1
+                    data:
+                      competition:
+                        id: 1
+                        name: Fun Run 1
+                        limit: 10
+                        created_at: '2023-02-21T15:15:35.000000Z'
+                        updated_at: '2023-02-21T15:15:35.000000Z'
+                      players:
+                        - id: 3
+                          name: David
+                          score: 13
+                          created_at: '2023-02-21T15:16:05.000000Z'
+                          updated_at: '2023-02-21T15:16:05.000000Z'
+                        - id: 2
+                          name: Doe
+                          score: 5
+                          created_at: '2023-02-21T15:16:01.000000Z'
+                          updated_at: '2023-02-21T15:16:01.000000Z'
+                    first_page_url: 'http://localhost/api/competitions/1?page=1'
+                    from: null
+                    last_page: 2
+                    last_page_url: 'http://localhost/api/competitions/1?page=2'
+                    links:
+                      - url: null
+                        label: '&laquo; Previous'
+                        active: false
+                      - url: 'http://localhost/api/competitions/1?page=1'
+                        label: '1'
+                        active: true
+                      - url: 'http://localhost/api/competitions/1?page=2'
+                        label: '2'
+                        active: false
+                      - url: 'http://localhost/api/competitions/1?page=2'
+                        label: Next &raquo;
+                        active: false
+                    next_page_url: 'http://localhost/api/competitions/1?page=2'
+                    path: 'http://localhost/api/competitions/1'
+                    per_page: 2
+                    prev_page_url: null
+                    to: null
+                    total: 3
+                properties:
+                  current_page:
+                    type: integer
+                  data:
+                    type: object
+                    properties:
+                      competition:
+                        $ref: '#/components/schemas/Competition'
+                      players:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Player-With-Score'
+                  first_page_url:
+                    type: string
+                  from:
+                    type: 'null'
+                  last_page:
+                    type: integer
+                  last_page_url:
+                    type: string
+                  links:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        url:
+                          type:
+                            - 'null'
+                            - string
+                        label:
+                          type: string
+                        active:
+                          type: boolean
+                  next_page_url:
+                    type: string
+                  path:
+                    type: string
+                  per_page:
+                    type: integer
+                  prev_page_url:
+                    type: 'null'
+                  to:
+                    type: 'null'
+                  total:
+                    type: integer
+        '404':
+          description: Not Found
+    put:
+      summary: Update Competition by ID
+      operationId: put-competitions-id
+      responses:
+        '200':
+          $ref: '#/components/responses/competition'
+        '404':
+          description: Not Found
+      description: Update a competition
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              x-examples:
+                Example 1:
+                  name: David Predusel
+                  limit: 10
+              properties:
+                name:
+                  type: string
+                limit:
+                  type: integer
+              required:
+                - name
+                - limit
+    delete:
+      summary: Delete Competition by ID
+      operationId: delete-competitions-id
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Not Found
+      description: Delete a competition
+  '/competitions/{competitionId}/add/{playerId}':
+    parameters:
+      - schema:
+          type: string
+        name: competitionId
+        in: path
+        required: true
+        description: The ID of the competition
+      - schema:
+          type: string
+        name: playerId
+        in: path
+        required: true
+        description: The ID of the player
+    patch:
+      summary: Competition add Player
+      operationId: patch-competitions-competitionId-add-playerId
+      responses:
+        '201':
+          description: Created
+        '404':
+          description: Not Found
+        '409':
+          description: 'Conflict, already registered to this competition'
+      description: Register a player to a competition
+  '/competitions/{competitionId}/increment/{playerId}':
+    parameters:
+      - schema:
+          type: string
+        name: competitionId
+        in: path
+        required: true
+        description: The ID of the Competition
+      - schema:
+          type: string
+        name: playerId
+        in: path
+        required: true
+        description: The Id of the Player
+    patch:
+      summary: Competition Increment Player Score
+      operationId: patch-competitions-competitionId-increment-playerId
+      responses:
+        '201':
+          description: Created
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      description: Increment the score of a player within a competition
+components:
+  schemas:
+    Player:
+      type: object
+      x-examples:
+        Example 1:
+          id: 1
+          name: John
+          created_at: '2023-02-21T15:15:58.000000Z'
+          updated_at: '2023-02-21T15:15:58.000000Z'
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+        competitions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Competition'
+    Player-Without-Competitions:
+      type: object
+      x-examples:
+        Example 1:
+          id: 1
+          name: John
+          created_at: '2023-02-21T15:15:58.000000Z'
+          updated_at: '2023-02-21T15:15:58.000000Z'
+      x-stoplight:
+        id: 5c81d67d9201b
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+    Player-With-Score:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        score:
+          type: integer
+        created_at:
+          type: string
+        updated_at:
+          type: string
+      x-examples:
+        Example 1:
+          id: 3
+          name: David
+          score: 13
+          created_at: '2023-02-21T15:16:05.000000Z'
+          updated_at: '2023-02-21T15:16:05.000000Z'
+      x-stoplight:
+        id: 6ce7dd887b273
+    Competition:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        limit:
+          type: integer
+        created_at:
+          type: string
+        updated_at:
+          type: string
+      x-examples:
+        Example 1:
+          id: 1
+          name: Fun Run 1
+          limit: 10
+          created_at: '2023-02-21T15:15:35.000000Z'
+          updated_at: '2023-02-21T15:15:35.000000Z'
+  responses:
+    players:
+      description: Players Model List - without competitions list
+      content:
+        application/json:
+          schema:
+            type: object
+            x-examples:
+              Example 1:
+                data:
+                  - id: 1
+                    name: John
+                    created_at: '2023-02-21T15:15:58.000000Z'
+                    updated_at: '2023-02-21T15:15:58.000000Z'
+                  - id: 2
+                    name: Doe
+                    created_at: '2023-02-21T15:16:01.000000Z'
+                    updated_at: '2023-02-21T15:16:01.000000Z'
+                  - id: 3
+                    name: David
+                    created_at: '2023-02-21T15:16:05.000000Z'
+                    updated_at: '2023-02-21T15:16:05.000000Z'
+                  - id: 4
+                    name: David Predu
+                    created_at: '2023-02-21T15:16:10.000000Z'
+                    updated_at: '2023-02-21T15:16:10.000000Z'
+                  - id: 5
+                    name: David Predu
+                    created_at: '2023-02-21T19:55:58.000000Z'
+                    updated_at: '2023-02-21T19:55:58.000000Z'
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Player-Without-Competitions'
+        application/xml:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    created_at:
+                      type: string
+                    updated_at:
+                      type: string
+            x-examples:
+              Example 1:
+                data:
+                  - id: 1
+                    name: John
+                    created_at: '2023-02-21T15:15:58.000000Z'
+                    updated_at: '2023-02-21T15:15:58.000000Z'
+                  - id: 2
+                    name: Doe
+                    created_at: '2023-02-21T15:16:01.000000Z'
+                    updated_at: '2023-02-21T15:16:01.000000Z'
+                  - id: 3
+                    name: David
+                    created_at: '2023-02-21T15:16:05.000000Z'
+                    updated_at: '2023-02-21T15:16:05.000000Z'
+                  - id: 4
+                    name: David Predu
+                    created_at: '2023-02-21T15:16:10.000000Z'
+                    updated_at: '2023-02-21T15:16:10.000000Z'
+        multipart/form-data:
+          schema:
+            type: object
+            properties: {}
+    player:
+      description: The Player Model
+      content:
+        application/json:
+          schema:
+            type: object
+            x-examples:
+              Example 1:
+                data:
+                  id: 1
+                  name: John
+                  created_at: '2023-02-21T15:15:58.000000Z'
+                  updated_at: '2023-02-21T15:15:58.000000Z'
+                  competitions:
+                    - id: 1
+                      name: Fun Run 1
+                      limit: 10
+                      created_at: '2023-02-21T15:15:35.000000Z'
+                      updated_at: '2023-02-21T15:15:35.000000Z'
+            properties:
+              data:
+                $ref: '#/components/schemas/Player'
+    player-simple:
+      description: The player model without competitions.
+      content:
+        application/json:
+          schema:
+            type: object
+            x-examples:
+              Example 1:
+                data:
+                  id: 1
+                  name: David Predusel
+                  created_at: '2023-02-21T15:15:58.000000Z'
+                  updated_at: '2023-02-21T20:11:52.000000Z'
+            properties:
+              data:
+                $ref: '#/components/schemas/Player-Without-Competitions'
+    competitions:
+      description: List of Competitions model
+      content:
+        application/json:
+          schema:
+            type: object
+            x-examples:
+              Example 1:
+                data:
+                  - id: 1
+                    name: Fun Run 1
+                    limit: 10
+                    created_at: '2023-02-21T15:15:35.000000Z'
+                    updated_at: '2023-02-21T15:15:35.000000Z'
+                  - id: 2
+                    name: Fun Run 2
+                    limit: 10
+                    created_at: '2023-02-21T15:15:38.000000Z'
+                    updated_at: '2023-02-21T15:15:38.000000Z'
+                  - id: 3
+                    name: Fun Run 3
+                    limit: 10
+                    created_at: '2023-02-21T15:15:42.000000Z'
+                    updated_at: '2023-02-21T15:15:42.000000Z'
+                  - id: 4
+                    name: Fun Run 4
+                    limit: 10
+                    created_at: '2023-02-21T15:15:45.000000Z'
+                    updated_at: '2023-02-21T15:15:45.000000Z'
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Competition'
+    competition:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            x-examples:
+              Example 1:
+                data:
+                  id: 2
+                  name: Fun Run 4
+                  limit: 10
+                  created_at: '2023-02-21T15:15:38.000000Z'
+                  updated_at: '2023-02-21T20:30:47.000000Z'
+            properties:
+              data:
+                $ref: '#/components/schemas/Competition'
